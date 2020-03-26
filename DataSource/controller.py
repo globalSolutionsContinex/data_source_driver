@@ -8,8 +8,8 @@ class Connect:
     def __init__(self, descriptor, s3_client, stage):
         self.s3_client = s3_client  # type:s3.S3Client
         self.stage = stage
-        self.retailer_descriptor = descriptor.retailer_descriptor
-        self.logger = log.get_logger(self.retailer_descriptor['name'])
+        self.data_descriptor = descriptor.data_descriptor
+        self.logger = log.get_logger(self.data_descriptor['name'])
         self.channel_descriptor = descriptor.channel_descriptor
         self.logger.info('init channel_controller')
         # data sources type
@@ -56,16 +56,16 @@ class Connect:
         return [None, None, None]
 
     def get_file_s3(self):
-        local_directory = 'upsert_' + self.retailer_descriptor[self.NAME] + '/'
+        local_directory = 'upsert_' + self.data_descriptor[self.NAME] + '/'
         self.logger.info("extracting file...")
-        today_files = self.s3_client.get_pending_files(local_directory, self.retailer_descriptor[self.INFO_TYPE])
+        today_files = self.s3_client.get_pending_files(local_directory, self.data_descriptor[self.INFO_TYPE])
         pending_files = self.process_file(today_files, local_directory,
                                           self.s3_client.download_file, self.s3_client.client, self.s3_client.move_file)
-        s3_path = "{}{}".format(local_directory, self.retailer_descriptor[self.METHOD])
+        s3_path = "{}{}".format(local_directory, self.data_descriptor[self.METHOD])
         return [pending_files, s3_path]
 
     def get_file_ftp(self, is_tls):
-        local_directory = 'update_' + self.retailer_descriptor[self.NAME] + '/'
+        local_directory = 'update_' + self.data_descriptor[self.NAME] + '/'
         host = self.channel_descriptor[self.HOST]
         user = self.channel_descriptor[self.USER]
         password = self.channel_descriptor[self.PASSWORD]
@@ -73,14 +73,14 @@ class Connect:
         ftp = self.ftp_lib.get_ftp_tls(host, user, password) if is_tls else self.ftp_lib.get_ftp(host, user, password)
         ftp.cwd(self.channel_descriptor[self.DIR_PATH])
         self.logger.info("extracting file...")
-        today_files = self.ftp_lib.get_ftp_today_files(ftp, self.retailer_descriptor)
+        today_files = self.ftp_lib.get_ftp_today_files(ftp, self.data_descriptor)
         pending_files = self.process_file(today_files, local_directory, self.ftp_lib.download_ftp_file, ftp, self.ftp_lib.move_file)
         ftp.close()
-        s3_path = "{}{}".format(local_directory, self.retailer_descriptor[self.METHOD])
+        s3_path = "{}{}".format(local_directory, self.data_descriptor[self.METHOD])
         return [pending_files, s3_path]
 
     def get_file_sftp(self):
-        local_directory = 'update_' + self.retailer_descriptor[self.NAME] + '/'
+        local_directory = 'update_' + self.data_descriptor[self.NAME] + '/'
         host = self.channel_descriptor[self.HOST]
         user = self.channel_descriptor[self.USER]
         port = self.channel_descriptor[self.PORT]
@@ -92,11 +92,11 @@ class Connect:
         sftp_client = sftp_instance.sftp
         sftp_client.chdir(dir_path)
         self.logger.info("extracting file...")
-        today_files = self.ftp_lib.get_sftp_today_files(sftp_client, self.retailer_descriptor)
+        today_files = self.ftp_lib.get_sftp_today_files(sftp_client, self.data_descriptor)
         pending_files = self.process_file(today_files, local_directory, self.ftp_lib.download_sftp_file, sftp_client, self.ftp_lib.move_file,
                                           is_encrypted=self.channel_descriptor[self.IS_ENCRYPTED])
         sftp_instance.close()
-        s3_path = "{}{}".format(local_directory, self.retailer_descriptor[self.METHOD])
+        s3_path = "{}{}".format(local_directory, self.data_descriptor[self.METHOD])
         return[pending_files, s3_path]
 
     def process_file(self, today_files, local_directory, download_file_method, client, move_func, is_encrypted=False):

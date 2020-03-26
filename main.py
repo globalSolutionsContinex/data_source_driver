@@ -29,7 +29,6 @@ def schedule_jobs(configuration):
     # Configuration
     s3_config = configuration['s3']
     s3_thor_config = configuration['s3_thor']
-    monitor_db_config = configuration['monitor_db']
     stage = configuration['stage']
 
     # create Data flows
@@ -37,7 +36,7 @@ def schedule_jobs(configuration):
         flow = master.data_flows[data_flow]
         logger.info("*** Init {} Flow ***".format(data_flow))
         update_flow = retailer_controller.UpdateRetailer(flow['descriptor'],
-                                                         stage, s3_config, s3_thor_config, monitor_db_config)
+                                                         stage, s3_config, s3_thor_config)
         logger.info("*** {} Schedule run every {} seconds ***".format(data_flow, flow['run_every_seconds']))
         create_interval_job(seconds=flow['run_every_seconds'], job=update_flow, initial_hour=flow['initial_hour'], final_hour=flow['final_hour'])
 

@@ -8,12 +8,11 @@ from infrastructure import log, files
 
 class UpdateRetailer:
 
-    def __init__(self, descriptor, stage, s3_config, s3_thor_config, monitor_db_config):
+    def __init__(self, descriptor, stage, s3_config, s3_thor_config):
         self.descriptor = descriptor
         self.s3_config = s3_config
         self.s3_thor_config = s3_thor_config
-        self.monitor_db_config = monitor_db_config
-        self.logger = log.get_logger(self.descriptor.retailer_descriptor['name'])
+        self.logger = log.get_logger(self.descriptor.data_descriptor['name'])
         self.s3_client = None
         self.s3_thor_client = None
         self.channel_controller = None
