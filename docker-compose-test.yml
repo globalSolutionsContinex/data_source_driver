@@ -1,0 +1,12 @@
+version: '3'
+services:
+  hulk:
+    build:
+      context: .
+      dockerfile: test/Dockerfile
+    image: 'gsc/data_source_flow_test'
+    container_name: data_source_flow_test
+    environment:
+      - ENV=${ENV}
+    volumes:
+      - .:/var/www/
