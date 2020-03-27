@@ -25,7 +25,7 @@ data_descriptor = {
     'delimiter': ';',
     'retailer_id': '*',
     'headers': True,
-    'method': 'upsert_method'
+    'method': 'upsert'
 }
 
 channel_descriptor = {
