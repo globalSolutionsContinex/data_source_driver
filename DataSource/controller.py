@@ -56,7 +56,7 @@ class Connect:
         return [None, None, None]
 
     def get_file_s3(self):
-        local_directory = 'upsert_' + self.data_descriptor[self.NAME] + '/'
+        local_directory = f'{self.data_descriptor[self.NAME]}/'
         self.logger.info("extracting file...")
         today_files = self.s3_client.get_pending_files(local_directory, self.data_descriptor[self.INFO_TYPE])
         pending_files = self.process_file(today_files, local_directory,
@@ -65,7 +65,7 @@ class Connect:
         return [pending_files, s3_path]
 
     def get_file_ftp(self, is_tls):
-        local_directory = 'update_' + self.data_descriptor[self.NAME] + '/'
+        local_directory = f'{self.data_descriptor[self.NAME]}/'
         host = self.channel_descriptor[self.HOST]
         user = self.channel_descriptor[self.USER]
         password = self.channel_descriptor[self.PASSWORD]
@@ -80,7 +80,7 @@ class Connect:
         return [pending_files, s3_path]
 
     def get_file_sftp(self):
-        local_directory = 'update_' + self.data_descriptor[self.NAME] + '/'
+        local_directory = f'{self.data_descriptor[self.NAME]}/'
         host = self.channel_descriptor[self.HOST]
         user = self.channel_descriptor[self.USER]
         port = self.channel_descriptor[self.PORT]

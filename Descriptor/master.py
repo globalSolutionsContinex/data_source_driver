@@ -8,7 +8,7 @@ day = 3600 * 24
 data_flows = {
     "generico": {
             "descriptor": generico,
-            "run_every_seconds": second,
+            "run_every_seconds": second * 10,
             "initial_hour": 0,
             "final_hour": 24
     }
