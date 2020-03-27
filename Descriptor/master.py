@@ -9,7 +9,7 @@ data_flows = {
     "generico": {
             "descriptor": generico,
             "run_every_seconds": second,
-            "initial_hour": 1,
+            "initial_hour": 0,
             "final_hour": 24
     }
 }
